@@ -1,7 +1,12 @@
 import express from 'express';
 import path from 'path';
 import { promises as fsPromises } from 'fs';
-import { isParamsExist, isValidDimension } from '../../utilities/validate';
+import {
+  isParamsExist,
+  isValidDimension,
+  ImgInfo
+} from '../../utilities/validate';
+import resizeImage from './../../utilities/resizeImage';
 
 // Create the route object for images endpoint
 const images = express.Router();
@@ -21,6 +26,19 @@ images.get(
       path.resolve('./'),
       `/assets/images/full/${imgName}.jpg`
     );
+    // The thumb folder path were the resized image will be stored
+    const thumbImgsDirPath = path.join(
+      path.resolve('./'),
+      `/assets/images/thumb`
+    );
+    // If the thumb folder not found then create it
+    fsPromises
+      .readdir(thumbImgsDirPath)
+      .then()
+      .catch(() => fsPromises.mkdir(thumbImgsDirPath));
+    // The resized image path
+    const newImgPath =
+      thumbImgsDirPath + `/${imgName}_thumb_${width}x${height}.jpg`;
 
     // Check if all the parameters in the request exist
     if (!isParamsExist(imgName, width, height)) {
@@ -37,7 +55,23 @@ images.get(
     } else {
       fsPromises
         .readFile(imgPath) // Check if the image exist
-        .then(() => res.status(200).sendFile(imgPath))
+        .then(() => {
+          // The requested image information
+          const myImg: ImgInfo = {
+            imgPath: imgPath,
+            imgWidth: width,
+            imgHeight: height,
+            newImgPath: newImgPath
+          };
+          // Resize the image and respond with the new resized image
+          resizeImage(myImg)
+            .then(() => res.status(200).sendFile(newImgPath))
+            .catch(() =>
+              // if dimentions requested very large (out of range)
+              res.status(422).send(`Sorry, the image couldn't be resized.<br>
+              coordinates out of range`)
+            );
+        })
         .catch(() => res.status(404).send('Sorry, Image not found.'));
     }
   }
