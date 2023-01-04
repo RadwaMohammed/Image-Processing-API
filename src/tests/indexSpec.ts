@@ -30,4 +30,20 @@ describe('Test endpoint responses', (): void => {
     );
     expect(response.status).toBe(422);
   });
+
+  // Image not found
+  it('responds with 404 if the image not found', async (): Promise<void> => {
+    const response = await request.get(
+      '/api/images?filename=fff&width=100&height=100'
+    );
+    expect(response.status).toBe(404);
+  });
+
+  // Image is found and all parameters valid
+  it('responds with 200 if the image exist and all the parameters valid', async (): Promise<void> => {
+    const response = await request.get(
+      '/api/images?filename=fjord&width=100&height=100'
+    );
+    expect(response.status).toBe(200);
+  });
 });
