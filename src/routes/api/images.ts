@@ -53,26 +53,38 @@ images.get(
         .status(422)
         .send('Invalid Params. Dimension must be positive number.');
     } else {
+      /* 
+      Check first if the request image with the same resized dimention exist in the thumb folder
+      if it exists send it 
+      if not then resize the requested image and save it in the thumb folder
+      and send it to the user 
+      */
       fsPromises
-        .readFile(imgPath) // Check if the image exist
-        .then(() => {
-          // The requested image information
-          const myImg: ImgInfo = {
-            imgPath: imgPath,
-            imgWidth: width,
-            imgHeight: height,
-            newImgPath: newImgPath
-          };
-          // Resize the image and respond with the new resized image
-          resizeImage(myImg)
-            .then(() => res.status(200).sendFile(newImgPath))
-            .catch(() =>
-              // if dimentions requested very large (out of range)
-              res.status(422).send(`Sorry, the image couldn't be resized.<br>
-              coordinates out of range`)
-            );
-        })
-        .catch(() => res.status(404).send('Sorry, Image not found.'));
+        .readFile(newImgPath) // Check firstt if the resised image in thumb folder
+        .then(() => res.status(200).sendFile(newImgPath))
+        .catch(() => {
+          fsPromises
+            .readFile(imgPath) // Check if the image exist
+            .then(() => {
+              // The requested image information
+              const myImg: ImgInfo = {
+                imgPath: imgPath,
+                imgWidth: width,
+                imgHeight: height,
+                newImgPath: newImgPath
+              };
+              // Resize the image and respond with the new resized image
+              resizeImage(myImg)
+                .then(() => res.status(200).sendFile(newImgPath))
+                .catch(() =>
+                  // if dimentions requested very large (out of range)
+                  res.status(422)
+                    .send(`Sorry, the image couldn't be resized.<br>
+                  coordinates out of range`)
+                );
+            })
+            .catch(() => res.status(404).send('Sorry, Image not found.'));
+        });
     }
   }
 );
