@@ -5,7 +5,7 @@ import routes from './routes/index';
 const app = express();
 const port = 3000;
 // Instructions of using the API
-const instruction = ` The route is http://localhost:${port}/api/images?filename=<imagename>&width=<width>&height=<height> 
+const instruction = ` The route is http://localhost:${port}/api/images?filename=imageName&width=imgWidth&height=imgHeight 
 <br><br> width and height should be positive numbers 
 <br>The available images<br>
 <li>encenadaport</li>
