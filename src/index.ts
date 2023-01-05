@@ -15,7 +15,7 @@ const instruction = ` The route is http://localhost:${port}/api/images?filename=
 <li>palmtunnel</li>`;
 
 // Define a route handler for the default home page
-app.get('/', (req, res) => {
+app.get('/', (req: express.Request, res: express.Response): void => {
   res.send(
     `<strong>Welcome to the Image Processing API</strong><br><br>${instruction}`
   );
@@ -26,14 +26,14 @@ app.get('/', (req, res) => {
 app.use('/api', routes);
 
 // Define a root hndler for any wrong path
-app.get('*', (req, res) => {
+app.get('*', (req: express.Request, res: express.Response): void => {
   res
     .status(400)
     .send(`<strong>Wrong API route</strong><br><br>${instruction}`);
 });
 
 // Start th Express server
-app.listen(port, () => {
+app.listen(port, (): void => {
   console.log(`server started at http://localhost:${port}`);
 });
 

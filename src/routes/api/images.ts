@@ -35,7 +35,7 @@ images.get(
     fsPromises
       .readdir(thumbImgsDirPath)
       .then()
-      .catch(() => fsPromises.mkdir(thumbImgsDirPath));
+      .catch((): Promise<void> => fsPromises.mkdir(thumbImgsDirPath));
     // The resized image path
     const newImgPath =
       thumbImgsDirPath + `/${imgName}_thumb_${width}x${height}.jpg`;
@@ -61,11 +61,11 @@ images.get(
       */
       fsPromises
         .readFile(newImgPath) // Check firstt if the resised image in thumb folder
-        .then(() => res.status(200).sendFile(newImgPath))
-        .catch(() => {
+        .then((): void => res.status(200).sendFile(newImgPath))
+        .catch((): void => {
           fsPromises
             .readFile(imgPath) // Check if the image exist
-            .then(() => {
+            .then((): void => {
               // The requested image information
               const myImg: ImgInfo = {
                 imgPath: imgPath,
@@ -75,15 +75,19 @@ images.get(
               };
               // Resize the image and respond with the new resized image
               resizeImage(myImg)
-                .then(() => res.status(200).sendFile(newImgPath))
-                .catch(() =>
-                  // if dimentions requested very large (out of range)
-                  res.status(422)
-                    .send(`Sorry, the image couldn't be resized.<br>
+                .then((): void => res.status(200).sendFile(newImgPath))
+                .catch(
+                  (): express.Response =>
+                    // if dimentions requested very large (out of range)
+                    res.status(422)
+                      .send(`Sorry, the image couldn't be resized.<br>
                   coordinates out of range`)
                 );
             })
-            .catch(() => res.status(404).send('Sorry, Image not found.'));
+            .catch(
+              (): express.Response =>
+                res.status(404).send('Sorry, Image not found.')
+            );
         });
     }
   }
