@@ -19,8 +19,6 @@ Download or Clone the repository to your computer.
 *   [Node.js](https://nodejs.org/)
 *   [Express](https://expressjs.com/)
 *   [Sharp](https://sharp.pixelplumbing.com/)
-*   [Jasmine](https://jasmine.github.io/)
-*   [SuperTest](https://www.npmjs.com/package/supertest)
 
 ### Dev dependencies
 
@@ -28,6 +26,8 @@ Download or Clone the repository to your computer.
 *   [Prettier](https://prettier.io/)
 *   [ESLint](https://eslint.org/)
 *   [nodemon](https://nodemon.io/)
+*   [Jasmine](https://jasmine.github.io/)
+*   [SuperTest](https://www.npmjs.com/package/supertest)
 *   [image-size](https://www.npmjs.com/package/image-size)
 
 ### Running the server
